@@ -635,6 +635,41 @@ document.getElementById('print-matrix-button').addEventListener('click', functio
     }
 });
 
+// Função para exibir uma matriz no console
+function exibirMatriz(matriz) {
+    matriz.forEach(linha => {
+        console.log(linha.join('\t'));
+    });
+    console.log('\n');
+}
+
+// Matrizes de exemplo
+const matrizA = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+];
+
+const matrizB = [
+    [9, 8, 7],
+    [6, 5, 4],
+    [3, 2, 1]
+];
+
+console.log("Matriz A:");
+exibirMatriz(matrizA);
+
+console.log("Matriz B:");
+exibirMatriz(matrizB);
+
+try {
+    const resultado = multiplicarMatrizes(matrizA, matrizB);
+    console.log("Resultado da multiplicação:");
+    exibirMatriz(resultado);
+} catch (error) {
+    console.error(error.message);
+}
+
 // Função para atualizar o viewport
 function updateViewport() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
