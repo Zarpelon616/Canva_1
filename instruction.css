@@ -1,0 +1,84 @@
+/* instruction.css */
+
+/* Centraliza e estiliza o corpo da página */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;   
+    background-image: url('img/computacao-grafica.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover; /* A imagem cobrirá toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-attachment: fixed; /* A imagem de fundo permanece fixa ao rolar a página */
+    background-color: gray;/* Cor de fundo caso a imagem não carregue */
+    text-align: center; /* Centraliza o texto */    
+}
+
+/* Parágrafos e texto */
+p {
+    color: #555;
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 15px;
+}
+
+/* Contêiner central para as instruções */
+#instructionsContainer {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+/* Estilo para a mensagem de boas-vindas */
+#welcomeMessage {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007BFF; /* Define a cor azul */
+    margin-bottom: 20px;
+}
+
+/* Estilo para a frase indicando as instruções */
+#instructionsHeader {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Lista de instruções */
+ul {
+    list-style-position: inside;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    padding: 0;
+    text-align: center; /* Centraliza a lista também */
+}
+
+ul li {
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Link estilizado */
+a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #007BFF;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+/* Hover do link */
+a:hover {
+    background-color: #45a049;
+    text-decoration: underline;
+}

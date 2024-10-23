@@ -1,0 +1,210 @@
+body {
+    font-family: 'Arial', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 10px;
+    padding: 10px;
+    background-color: rgba(14, 14, 14, 0.747);
+    display: flex;
+    justify-content: center;
+    background-image: url('img/computacao-grafica.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover; /* A imagem cobrirá toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-attachment: fixed; /* A imagem de fundo permanece fixa ao rolar a página */
+}
+
+h1 {
+    margin-bottom: 10px;
+    color: rgba(73, 70, 70, 0.87);
+}
+
+tbody {
+    background-color: white;
+}
+
+#container {
+    display: flex;
+    width: 100%;
+    max-width: 1300px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Tabela à esquerda */
+#table-container {
+    flex: 1;
+    margin-right: 20px;
+    max-width: 300px; /* Largura máxima da tabela */
+}
+
+#object-table {
+    width: 100%;
+    height: auto;
+    max-height: 400px;  /* Aumentei a altura máxima para a tabela */
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 0px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+#object-table th, #object-table td {
+    border: 1px solid #dddddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 15px;
+}
+
+#object-table th {
+    background-color: #f8f9fa;
+}
+
+.selected {
+    background-color: #ec7070;
+}
+
+/* Canvas no centro */
+#viewport-container {
+    flex: 2; /* Mais espaço para o canvas */
+    background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(27, 26, 26, 0.808);
+    display: flex;
+    flex-direction: column; /* Para alinhar o texto acima do canvas */
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+#viewport {
+    height: 600px;
+    width: 600px;
+    background-color: transparent;
+}
+
+/* Estilo para o fundo escuro do modal */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* Inicialmente escondido */
+    z-index: 999; /* Fica atrás do modal */
+}
+
+/* Estilo para o modal */
+#matrix-creation-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 8px; /* Adicionando bordas arredondadas */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none; /* Inicialmente escondido */
+}
+
+/* Estilo dos inputs do modal */
+#matrix-creation-modal input[type="text"] {
+    width: calc(100% - 20px); /* Ajusta a largura para caber no modal */
+    padding: 10px;
+    margin: 5px 0; /* Espaçamento entre os inputs */
+    border: 1px solid #dddddd;
+    border-radius: 5px; /* Bordas arredondadas para os inputs */
+}
+
+/* Estilo para o botão do modal */
+#matrix-creation-modal button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px; /* Espaçamento superior para o botão */
+    border: none;
+    background-color: #101111;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Efeito hover para os botões do modal */
+#matrix-creation-modal button:hover {
+    background-color: #0056b3;
+}
+
+#matrix-table-container {
+    margin-top: 20px; /* Espaço acima da tabela de matrizes */
+}
+
+#matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 0px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+#matrix-table th, #matrix-table td {
+    border: 1px solid #dddddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 15px;
+}
+
+#matrix-table th {
+    background-color: #f8f9fa;
+}
+
+/* Botões à direita */
+#controls-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#controls {
+    width: 100%;
+    padding: 8px;
+    background-color: transparent;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(146, 141, 141, 0.1);
+    margin-bottom: 25px;
+}
+
+#controls h3 {
+    margin-top: 0;
+}
+
+#controls button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 2px;
+    border: none;
+    background-color: #101111;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#controls button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo do botão de instruções */
+#instructions-button {
+    background-color: white; /* Cor diferente para o botão de instruções */
+    margin-bottom: 2px;
+    border-radius: 2px;
+    padding: 10px;
+}
+
+#instructions-button:hover {
+    background-color: #45a049;
+    align-items: center;
+}

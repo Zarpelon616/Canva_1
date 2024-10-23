@@ -1,0 +1,74 @@
+/* login.css */
+
+/* Centraliza o conteúdo da página */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    background-image: url('img/computacao-grafica.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover; /* A imagem cobrirá toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-attachment: fixed; /* A imagem de fundo permanece fixa ao rolar a página */
+    background-color: gray;/* Cor de fundo caso a imagem não carregue */
+    flex-direction: column;  /* Permite que o título e o formulário fiquem em colunas */
+}
+
+/* Estiliza o contêiner do formulário */
+#loginForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    font-size: 50px;
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estiliza o contêiner do formulário */
+#loginForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Estiliza os campos de input */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Botão de submit */
+button {
+    width: 100%;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Efeito hover no botão */
+button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instruções de Uso</title>
+    <link rel="stylesheet" href="instruction.css">
+</head>
+<body>
+    <div id="instructionsContainer">
+        <h1 id="welcomeMessage">Bem-vindo!</h1>
+        <p id="instructionsHeader">Aqui estão as instruções de como usar a aplicação:</p>
+        <ul>
+            <li>As ações como adicionar, remover, mover e etc... são feitas pelos botões da direita;</li>
+            <li>Ao adicionar um objeto, evite repetir nomes;</li>
+            <li>A lista à esquerda exibe os objetos existentes e suas informações;</li>
+            <li>Selecione os objetos diretamente pela lista;</li>
+            <li>Para remover um objeto, selecione-o pela lista ou digite o nome;</li>
+            <li>Para a criação de matriz inicialmente indique o número de pontos que tera, após isso escolha um nome e as coordenada; deve ter no minimo 4 pontos</li>
+            <l1>A função de Zoom e Viewport é feita atravez do mouse.</l1>
+        </ul>
+        <a href="index.html">Ir para o Canvas</a>
+    </div>
+
+    <script>
+        // Obtém o nome do usuário armazenado e exibe a mensagem de boas-vindas
+        const username = localStorage.getItem('username');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        
+        if (username) {
+            welcomeMessage.textContent = `Bem-vindo, ${username}!`;
+        } else {
+            welcomeMessage.textContent = 'Bem-vindo!';
+        }
+    </script>
+</body>
+</html>
