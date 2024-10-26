@@ -6,26 +6,37 @@
     <title>Sistema Canvas</title>
     <link rel="stylesheet" href="style.css"><!--Estilos personalizados-->
     <link rel="icon" href="img/icon-computacao-grafica.jpg" type="image/x-icon"><!--Define o ícone da página-->
+    <style>
+        /* Estilos para o contêiner dos botões */
+        .button-container {
+            display: flex; /* Usar flexbox para alinhar os botões */
+            gap: 10px; /* Espaçamento entre os botões */
+        }
+    </style>
 </head>
 <body>
 
     <!-- Container principal -->
     <div id="container">
+        <div class="add-box">
+        <button id="show-table-button">TABELA DE OBJETOS</button> <!-- Botão para exibir a tabela de objetos -->
+        
 
-        <!-- Tabela com objetos adicionados -->
-        <div id="table-container">
-            <table id="object-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Tipo</th>
-                        <th>Coordenadas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Linhas da tabela serão geradas dinamicamente -->
-                </tbody>
-            </table>
+            <!-- Tabela com objetos adicionados -->
+            <div id="table-container" style="display: none;">
+                <table id="object-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Coordenadas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas da tabela serão geradas dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Canvas centralizado para exibir os objetos -->
@@ -35,23 +46,34 @@
 
         <!-- Botões de controle à direita -->
         <div id="controls-container">
-            <div id="controls">
-                <button id="add-point">Adicionar Ponto</button>
-                <button id="add-line">Adicionar Reta</button>
-                <button id="add-polyline">Adicionar Polilinha</button>
-                <button id="add-polygon">Adicionar Polígono</button>
-                <button id="add-matrix">Adicionar Matriz</button> <!-- Botão para adicionar matriz -->
-                <button id="multiply-matrices">Multiplicar Matrizes</button>
-                <button id="print-matrix-button">Imprimir Matriz</button>
-                <button id="remove-object">Remover Objeto</button>
-                <button id="remove-all-objects">Remover Todos os Objetos</button>
-                <button id="move-point">Mover Objeto</button>
-                <button id="translate-object">Transladar Objeto</button><!-- Move as coordenadas em Dx e Dy -->
-                <button id="rotate-object">Rotacionar Objeto</button><!-- Rotaciona ao redor da origem -->
-                <button id="scale-object">Escalonar Objeto</button><!-- Escala as coordenadas por um fator positivo -->
-
+            <div class="controls-box">
+                <button id="show-all-buttons">CONTROLES</button> <!-- Botão para exibir todos os botões -->
             </div>
-            <button id="instructions-button" onclick="window.location.href='instructions.html';">Instruções de Uso</button>
+            <div id="controls">
+                <!-- Div para todos os botões, inicialmente oculta -->
+                <div id="all-controls" style="display: none;" class="add-box">
+                    <!--Botões de adicionar -->
+                    <button id="add-point">Adicionar Ponto</button>
+                    <button id="add-line">Adicionar Reta</button>
+                    <button id="add-polyline">Adicionar Polilinha</button>
+                    <button id="add-polygon">Adicionar Polígono</button>
+
+                    <!--Botões de operações de matriz-->
+                    <button id="add-matrix">Adicionar Matriz</button>
+                    <button id="multiply-matrices">Multiplicar Matrizes</button>
+                    <button id="print-matrix-button">Imprimir Matriz</button>
+                    <!--Botões de transformação-->
+                    <button id="move-point">Mover Objeto</button>
+                    <button id="translate-object">Transladar Objeto</button>
+                    <button id="rotate-object">Rotacionar</button>
+                    <button id="scale-object">Escalonar</button>
+
+                    <!-- Botões de remoção -->
+                    <button id="remove-object">Remover</button>
+                    <button id="remove-all-objects">Remover Todos os Objetos</button>
+
+                </div>     
+            </div>
         </div>
 
         <!-- Modal para criar uma matriz -->
@@ -62,7 +84,6 @@
             <h4>Insira as Coordenadas:</h4>
             <div id="coordinate-inputs"></div>
 
-            <button id="create-matrix-button">Criar Matriz</button>
             <button id="cancel-matrix-creation">Cancelar</button>
         </div>
 

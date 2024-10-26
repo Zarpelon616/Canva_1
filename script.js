@@ -55,6 +55,38 @@ function canvasToCartesian(x, y) {
     };
 }
 
+// Exibir todos os botões ao clicar no botão "Mostrar Controles"
+document.getElementById("show-all-buttons").addEventListener("click", function(event) {
+    event.stopPropagation(); // Impede que o clique feche o menu
+    const allControls = document.getElementById("all-controls");
+    
+    // Alterna a exibição dos controles
+    if (allControls.style.display === "none" || allControls.style.display === "") {
+        allControls.style.display = "block"; // Mostra todos os botões
+    } else {
+        allControls.style.display = "none"; // Oculta todos os botões
+    }
+});
+
+// Exibir a tabela de objetos ao clicar no botão "Mostrar Tabela"
+document.getElementById("show-table-button").addEventListener("click", function(event) {
+    event.stopPropagation(); // Impede que o clique no botão feche a tabela
+    const tableContainer = document.getElementById("table-container");
+    
+    // Alterna a exibição da tabela
+    if (tableContainer.style.display === "none" || tableContainer.style.display === "") {
+        tableContainer.style.display = "block"; // Mostra a tabela
+        document.getElementById("object-table").style.display = "block";
+        document.getElementById("add-controls").style.display = "none";
+        document.getElementById("matrix-controls").style.display = "none";
+        document.getElementById("transform-controls").style.display = "none"; // Minimiza outros menus, se estiverem abertos
+    } else {
+        tableContainer.style.display = "none"; // Oculta a tabela
+        document.getElementById("object-table").style.display = "none"; // Oculta a tabela de objetos
+    }
+});
+
+
 // Função para adicionar um ponto
 function addPoint() {
     const name = prompt('Nome do Ponto:');//Função que define o nome
@@ -142,7 +174,6 @@ function selectObjectByName(name) {
     selectedObject = displayList.find(obj => obj.name === name);
 
     if (selectedObject) {
-        alert('Objeto ' + selectedObject.name + ' selecionado.');
         updateTable();  // Atualiza a tabela para destacar o objeto selecionado
     } else {
         alert('Objeto não encontrado.');
@@ -259,7 +290,6 @@ function selectObjectFromTable(name) {
     selectedObject = displayList.find(obj => obj.name === name);
 
     if (selectedObject) {
-        alert('Objeto ' + selectedObject.name + ' selecionado.');
         updateTable();  // Atualiza a tabela para destacar o objeto selecionado
     } else {
         alert('Objeto não encontrado.');
@@ -634,6 +664,41 @@ document.getElementById('print-matrix-button').addEventListener('click', functio
         alert('Matriz não encontrada. Verifique o nome e tente novamente.');
     }
 });
+
+// Função para exibir uma matriz no console
+function exibirMatriz(matriz) {
+    matriz.forEach(linha => {
+        console.log(linha.join('\t'));
+    });
+    console.log('\n');
+}
+
+// Matrizes de exemplo
+const matrizA = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+];
+
+const matrizB = [
+    [9, 8, 7],
+    [6, 5, 4],
+    [3, 2, 1]
+];
+
+console.log("Matriz A:");
+exibirMatriz(matrizA);
+
+console.log("Matriz B:");
+exibirMatriz(matrizB);
+
+try {
+    const resultado = multiplicarMatrizes(matrizA, matrizB);
+    console.log("Resultado da multiplicação:");
+    exibirMatriz(resultado);
+} catch (error) {
+    console.error(error.message);
+}
 
 // Função para atualizar o viewport
 function updateViewport() {

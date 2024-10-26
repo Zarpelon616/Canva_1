@@ -1,18 +1,29 @@
 body {
     font-family: 'Arial', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 10PX; /* Remove a margem padrão */
-    padding: 10px; /* Remove o padding padrão */
+    margin: 10px;
+    padding: 10px;
     background-color: rgba(14, 14, 14, 0.747);
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-image: url('img/computacao-grafica.jpg');
+    display: flex;
+    justify-content: center;
+    background-image: url('img/computacao-grafica.jpg'); /* Substitua pelo caminho da sua imagem */
+    background-size: cover; /* A imagem cobrirá toda a tela */
+    background-position: center; /* Centraliza a imagem */
+    background-attachment: fixed; /* A imagem de fundo permanece fixa ao rolar a página */
+}
+
+h1 {
+    margin-bottom: 10px;
+    color: rgba(73, 70, 70, 0.87);
+}
+
+tbody {
+    background-color: white;
 }
 
 #container {
-    width: 100%;
-    height: 70%; /* Permite que o container cubra toda a altura da página */
     display: flex;
+    width: 100%;
+    max-width: 1300px;
     justify-content: space-between;
     align-items: flex-start;
 }
@@ -21,19 +32,17 @@ body {
 #table-container {
     flex: 1;
     margin-right: 20px;
-    max-width: 300px;
-    margin-top: 10px;
-    max-height: 200px; /* Define a altura máxima do contêiner da tabela */
-    overflow-y: auto; /* Adiciona rolagem vertical */
+    max-width: 300px; /* Largura máxima da tabela */
 }
 
 #object-table {
     width: 100%;
-    max-height: 400px;
+    height: auto;
+    max-height: 400px;  /* Aumentei a altura máxima para a tabela */
     border-collapse: collapse;
     margin-top: 10px;
     background-color: #ffffff;
-    border-radius: 8px; /* Adiciona bordas arredondadas */
+    border-radius: 0px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 }
@@ -55,20 +64,20 @@ body {
 
 /* Canvas no centro */
 #viewport-container {
-    flex: 3;
+    flex: 2; /* Mais espaço para o canvas */
     background-color: white;
-    border-radius: 8px; /* Consistência nos bordas arredondadas */
+    border-radius: 3px;
     box-shadow: 0 0 10px rgba(27, 26, 26, 0.808);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Para alinhar o texto acima do canvas */
     justify-content: center;
     align-items: center;
     margin-right: 20px;
 }
 
 #viewport {
-    width: 70%;
-    height: 80%;
+    height: 600px;
+    width: 600px;
     background-color: transparent;
 }
 
@@ -80,8 +89,8 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    display: none;
-    z-index: 999;
+    display: none; /* Inicialmente escondido */
+    z-index: 999; /* Fica atrás do modal */
 }
 
 /* Estilo para o modal */
@@ -91,27 +100,27 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    border-radius: 8px;
+    border-radius: 8px; /* Adicionando bordas arredondadas */
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    display: none;
+    display: none; /* Inicialmente escondido */
 }
 
 /* Estilo dos inputs do modal */
 #matrix-creation-modal input[type="text"] {
-    width: calc(100% - 20px);
+    width: calc(100% - 20px); /* Ajusta a largura para caber no modal */
     padding: 10px;
-    margin: 5px 0;
+    margin: 5px 0; /* Espaçamento entre os inputs */
     border: 1px solid #dddddd;
-    border-radius: 5px;
+    border-radius: 5px; /* Bordas arredondadas para os inputs */
 }
 
 /* Estilo para o botão do modal */
 #matrix-creation-modal button {
     width: 100%;
     padding: 12px;
-    margin-top: 10px;
+    margin-top: 10px; /* Espaçamento superior para o botão */
     border: none;
     background-color: #101111;
     color: white;
@@ -126,7 +135,7 @@ body {
 }
 
 #matrix-table-container {
-    margin-top: 20px;
+    margin-top: 20px; /* Espaço acima da tabela de matrizes */
 }
 
 #matrix-table {
@@ -134,7 +143,7 @@ body {
     border-collapse: collapse;
     margin-top: 10px;
     background-color: #ffffff;
-    border-radius: 8px; /* Consistência nos bordas arredondadas */
+    border-radius: 0px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 }
@@ -150,44 +159,57 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Container de botões à esquerda */
+/* Botões à direita */
 #controls-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
 }
 
-/* Estilo da caixa branca para os botões de adicionar e funções */
-.controls-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-    background-color: white;
+#controls {
+    width: 80%;
+    padding: 8px;
+    background-color: transparent;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(146, 141, 141, 0.1);
+    margin-bottom: 25px;
+}
+
+#controls h3 {
+    margin-top: 0;
+}
+
+#controls button {
+    width: 80%;
+    padding: 12px;
+    margin-bottom: 2px;
+    border: none;
+    background-color: #101111;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#controls button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo da caixa branca para os botões de adicionar */
+.add-box {
+    padding: 10px;
+    background-color: white; /* Fundo branco para os botões de adicionar */
+    border-radius: 8px; /* Borda arredondada */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra leve */
     margin-bottom: 20px;
 }
 
-/* Estilo para a caixa que contém todos os botões */
-#all-controls {
-    display: none; /* Oculta por padrão */
-    margin-top: 10px; /* Espaço entre o botão de mostrar e os controles */
-    padding: 10px; /* Espaçamento interno */
-    background-color: white; /* Cor de fundo */
-    border-radius: 8px; /* Bordas arredondadas */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra para profundidade */
-    position: absolute; /* Fixa a posição em relação ao seu pai */
-    z-index: 999; /* Garante que fique acima de outros elementos */
-    max-height: 400px; /* Define uma altura máxima para o contêiner */
-    overflow-y: auto; /* Adiciona rolagem vertical se o conteúdo exceder a altura máxima */
-}
-
-/* Estilo dos botões dentro da caixa de adicionar e funções */
-.controls-box button {
+/* Estilo dos botões dentro da caixa de adicionar */
+.add-box button {
+    width: 100%;
     padding: 12px;
-    margin-right: 5px; /* Espaçamento entre os botões */
+    margin-bottom: 5px;
     border: none;
     background-color: #101111;
     color: white;
@@ -196,26 +218,12 @@ body {
     transition: background-color 0.3s ease;
 }
 
-/* Efeito hover para os botões */
-.controls-box button:hover {
-    background-color: #0056b3;    
+/* Efeito hover para os botões dentro da caixa */
+.add-box button:hover {
+    background-color: #0056b3;
 }
 
-/* Estilo do botão de mostrar lista de objetos */
-#show-list-button {
-    position: absolute;
-    right: 20px; /* Alinha no canto superior direito */
-    top: 10px;
-    padding: 10px;
-    background-color: #101111;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-/* Estilo da caixa branca para os botões */
+/* Estilo da caixa branca para os botões de adicionar */
 .add-box {
     padding: 10px;
     background-color: white;
@@ -224,11 +232,20 @@ body {
     margin-bottom: 20px;
 }
 
-/* Estilo dos botões dentro da caixa */
-.add-box button {
-    width: 100%; /* Para que os botões ocupem toda a largura da caixa */
+/* Estilo da caixa branca para operações de matriz */
+.matrix-box {
+    padding: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Estilo dos botões dentro da caixa de adicionar e da caixa de matriz */
+.add-box button, .matrix-box button {
+    width: 100%;
     padding: 12px;
-    margin-bottom: 5px; /* Espaçamento entre os botões */
+    margin-bottom: 5px;
     border: none;
     background-color: #101111;
     color: white;
@@ -238,6 +255,20 @@ body {
 }
 
 /* Efeito hover para os botões */
-.add-box button:hover {
+.add-box button:hover, .matrix-box button:hover {
     background-color: #0056b3;
+}
+
+
+/* Estilo do botão de instruções */
+#instructions-button {
+    background-color: white; /* Cor diferente para o botão de instruções */
+    margin-bottom: 2px;
+    border-radius: 2px;
+    padding: 10px;
+}
+
+#instructions-button:hover {
+    background-color: #45a049;
+    align-items: center;
 }
