@@ -210,45 +210,6 @@ function removeAllObjects() {
     updateTable();
 }
 
-// Função para mover o objeto selecionado
-function moveObject() {
-    if (selectedObject) {
-        if (selectedObject.type === 'point') {
-            const newX = parseFloat(prompt('Nova Coordenada X:', selectedObject.coords.x));
-            const newY = parseFloat(prompt('Nova Coordenada Y:', selectedObject.coords.y));
-
-            selectedObject.coords.x = newX;
-            selectedObject.coords.y = newY;
-
-        } else if (selectedObject.type === 'line') {
-            const newX1 = parseFloat(prompt('Nova Coordenada X1:', selectedObject.coords.x1));
-            const newY1 = parseFloat(prompt('Nova Coordenada Y1:', selectedObject.coords.y1));
-            const newX2 = parseFloat(prompt('Nova Coordenada X2:', selectedObject.coords.x2));
-            const newY2 = parseFloat(prompt('Nova Coordenada Y2:', selectedObject.coords.y2));
-
-            selectedObject.coords.x1 = newX1;
-            selectedObject.coords.y1 = newY1;
-            selectedObject.coords.x2 = newX2;
-            selectedObject.coords.y2 = newY2;
-
-        } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
-            selectedObject.coords.forEach((point, index) => {
-                const newX = parseFloat(prompt(`Nova Coordenada X para ponto ${index + 1}:`, point.x));
-                const newY = parseFloat(prompt(`Nova Coordenada Y para ponto ${index + 1}:`, point.y));
-
-                point.x = newX;
-                point.y = newY;
-            });
-        } 
-
-        updateViewport();
-        updateTable();
-    } else {
-        alert('Nenhum objeto selecionado.');
-    }
-}
-
-
 // Função para selecionar um ponto
 // Função para selecionar um ponto ao clicar no canvas
 function selectPoint(event) {
@@ -286,18 +247,14 @@ function selectPoint(event) {
 }
 
 
-function selectObjectFromTable(name) {
-    selectedObject = displayList.find(obj => obj.name === name);
-
-    if (selectedObject) {
-        updateTable();  // Atualiza a tabela para destacar o objeto selecionado
-    } else {
-        alert('Objeto não encontrado.');
-    }
-}
-
 // Função para mover o objeto selecionado
 function moveObject() {
+    if (!selectedObject) {
+        const name = prompt('Nenhum objeto selecionado. Insira o nome do objeto que deseja selecionar:');
+        if (name) {
+            selectObjectByName(name);
+        }
+    }
     if (selectedObject) {
         if (selectedObject.type === 'point') {
             const newX = parseFloat(prompt('Nova Coordenada X:', selectedObject.coords.x));
@@ -325,7 +282,15 @@ function moveObject() {
                 point.x = newX;
                 point.y = newY;
             });
-        } 
+        } else if (selectedObject instanceof Matrix) { // Novo caso para matrizes
+            selectedObject.points.forEach((point, index) => {
+                const newX = parseFloat(prompt(`Nova Coordenada X para ponto ${index + 1}:`, point[0]));
+                const newY = parseFloat(prompt(`Nova Coordenada Y para ponto ${index + 1}:`, point[1]));
+
+                point[0] = newX;
+                point[1] = newY;
+            });
+        }
 
         updateViewport();
         updateTable();
@@ -336,10 +301,17 @@ function moveObject() {
 
 // Função para transladar um objeto selecionado
 function translateObject() {
+    if (!selectedObject) {
+        const name = prompt('Nenhum objeto selecionado. Insira o nome do objeto que deseja selecionar:');
+        if (name) {
+            selectObjectByName(name);
+        }
+    }
     if (selectedObject) {
         const dx = parseFloat(prompt('Transladar em X (Dx):'));
         const dy = parseFloat(prompt('Transladar em Y (Dy):'));
 
+        // Verifica se Dx e Dy são números válidos e permite valores positivos ou negativos
         if (!isNaN(dx) && !isNaN(dy)) {
             if (selectedObject.type === 'point') {
                 selectedObject.coords.x += dx;
@@ -354,8 +326,14 @@ function translateObject() {
                     point.x += dx;
                     point.y += dy;
                 });
+            } else if (selectedObject instanceof Matrix) { // Novo caso para matrizes
+                selectedObject.points.forEach(point => {
+                    point[0] += dx; // Translada coordenada x do ponto
+                    point[1] += dy; // Translada coordenada y do ponto
+                });
             }
 
+            // Atualiza a visualização e a tabela com os novos valores
             updateViewport();
             updateTable();
         } else {
@@ -366,35 +344,82 @@ function translateObject() {
     }
 }
 
-// Função para rotacionar um objeto selecionado
+// Função para rotacionar um objeto selecionado ao redor de um ponto qualquer, origem ou centro do objeto
 function rotateObject() {
+    if (!selectedObject) {
+        const name = prompt('Nenhum objeto selecionado. Insira o nome do objeto que deseja selecionar:');
+        if (name) {
+            selectObjectByName(name);
+        }
+    }
     if (selectedObject) {
         const angle = parseFloat(prompt('Rotacionar por um ângulo (em graus):'));
         const radians = angle * (Math.PI / 180); // Converte graus para radianos
 
+        // Pergunta ao usuário o centro de rotação
+        const rotationCenter = prompt('Digite "o" para rotacionar ao redor da origem, "c" para rotacionar ao redor do centro do objeto, ou "p" para um ponto específico:').toLowerCase();
+
+        let centerX = 0, centerY = 0;
+
         if (!isNaN(radians)) {
-            const rotatePoint = (x, y) => {
-                const newX = x * Math.cos(radians) - y * Math.sin(radians);
-                const newY = x * Math.sin(radians) + y * Math.cos(radians);
-                return { x: newX, y: newY };
+            // Função para rotacionar um ponto (x, y) em torno de um centro (cx, cy)
+            const rotatePoint = (x, y, cx, cy) => {
+                const translatedX = x - cx;
+                const translatedY = y - cy;
+                const rotatedX = translatedX * Math.cos(radians) - translatedY * Math.sin(radians);
+                const rotatedY = translatedX * Math.sin(radians) + translatedY * Math.cos(radians);
+                return { x: rotatedX + cx, y: rotatedY + cy };
             };
 
+            // Define o centro da rotação com base na escolha do usuário
+            if (rotationCenter === 'c') {
+                if (selectedObject.type === 'point') {
+                    centerX = selectedObject.coords.x;
+                    centerY = selectedObject.coords.y;
+                } else if (selectedObject.type === 'line') {
+                    centerX = (selectedObject.coords.x1 + selectedObject.coords.x2) / 2;
+                    centerY = (selectedObject.coords.y1 + selectedObject.coords.y2) / 2;
+                } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
+                    const numPoints = selectedObject.coords.length;
+                    centerX = selectedObject.coords.reduce((sum, point) => sum + point.x, 0) / numPoints;
+                    centerY = selectedObject.coords.reduce((sum, point) => sum + point.y, 0) / numPoints;
+                } else if (selectedObject instanceof Matrix) {
+                    const numPoints = selectedObject.points.length;
+                    centerX = selectedObject.points.reduce((sum, point) => sum + point[0], 0) / numPoints;
+                    centerY = selectedObject.points.reduce((sum, point) => sum + point[1], 0) / numPoints;
+                }
+            } else if (rotationCenter === 'p') {
+                // Se o usuário escolher "ponto", pede as coordenadas
+                centerX = parseFloat(prompt('Digite a coordenada X do ponto de rotação:'));
+                centerY = parseFloat(prompt('Digite a coordenada Y do ponto de rotação:'));
+                if (isNaN(centerX) || isNaN(centerY)) {
+                    alert('Coordenadas inválidas para o ponto de rotação.');
+                    return;
+                }
+            }
+            // Aplica a rotação ao redor do centro definido
             if (selectedObject.type === 'point') {
-                const newCoords = rotatePoint(selectedObject.coords.x, selectedObject.coords.y);
+                const newCoords = rotatePoint(selectedObject.coords.x, selectedObject.coords.y, centerX, centerY);
                 selectedObject.coords.x = newCoords.x;
                 selectedObject.coords.y = newCoords.y;
             } else if (selectedObject.type === 'line') {
-                const start = rotatePoint(selectedObject.coords.x1, selectedObject.coords.y1);
-                const end = rotatePoint(selectedObject.coords.x2, selectedObject.coords.y2);
+                const start = rotatePoint(selectedObject.coords.x1, selectedObject.coords.y1, centerX, centerY);
+                const end = rotatePoint(selectedObject.coords.x2, selectedObject.coords.y2, centerX, centerY);
                 selectedObject.coords.x1 = start.x;
                 selectedObject.coords.y1 = start.y;
                 selectedObject.coords.x2 = end.x;
                 selectedObject.coords.y2 = end.y;
             } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
-                selectedObject.coords.forEach((point, index) => {
-                    const newCoords = rotatePoint(point.x, point.y);
+                selectedObject.coords.forEach(point => {
+                    const newCoords = rotatePoint(point.x, point.y, centerX, centerY);
                     point.x = newCoords.x;
                     point.y = newCoords.y;
+                });
+            } else if (selectedObject instanceof Matrix) {
+                selectedObject.points.forEach(point => {
+                    const newCoords = rotatePoint(point[0], point[1], centerX, centerY);
+                    point[0] = newCoords.x;
+                    point[1] = newCoords.y;
                 });
             }
 
@@ -408,8 +433,15 @@ function rotateObject() {
     }
 }
 
-// Função para escalonar um objeto selecionado
+
+// Função para escalonar um objeto selecionado em relação à origem  
 function scaleObject() {
+    if (!selectedObject) {
+        const name = prompt('Nenhum objeto selecionado. Insira o nome do objeto que deseja selecionar:');
+        if (name) {
+            selectObjectByName(name);
+        }
+    }
     if (selectedObject) {
         const scale = parseFloat(prompt('Fator de escalonamento:'));
 
@@ -427,6 +459,11 @@ function scaleObject() {
                     point.x *= scale;
                     point.y *= scale;
                 });
+            } else if (selectedObject instanceof Matrix) { // Verifica se o objeto é uma instância da classe Matrix
+                selectedObject.points.forEach(point => {
+                    point[0] *= scale; // Escalonar coordenada x
+                    point[1] *= scale; // Escalonar coordenada y
+                });
             }
 
             updateViewport();
@@ -439,16 +476,17 @@ function scaleObject() {
     }
 }
 
-
+//Corrigir bug onde a matriz não costuma aparecer na tabela objeto
 // Classe para a Matriz
 class Matrix {
     constructor(name, points) {
         this.name = name;
-        this.points = points; // Um array de coordenadas (x, y)
+        this.points = points.map(point => [...point, 1]); // Adiciona a coordenada w = 1 para cada ponto
+        this.type = 'matrix'; // Identificador de tipo para seleção
     }
 
     drawLines(ctx) {
-        if (this.points.length < 2) return; // Precisamos de pelo menos 4 pontos
+        if (this.points.length < 2) return; // Precisamos de pelo menos 2 pontos
 
         ctx.beginPath();
         // Usar a função cartesianToCanvas para obter as coordenadas corretas do canvas
@@ -469,6 +507,7 @@ class Matrix {
         // Desenha os pontos destacados
         this.drawPoints(ctx);
     }
+
     drawPoints(ctx) {
         ctx.fillStyle = 'black'; // Cor dos pontos destacados
         const pointRadius = 5; // Raio dos pontos
@@ -481,6 +520,8 @@ class Matrix {
         }
     }
 }
+
+
 
 // Função para abrir o modal
 document.getElementById('add-matrix').addEventListener('click', function() {
@@ -529,7 +570,7 @@ function createMatrix() {
     });
 
     // Verifica se há pelo menos 4 pontos
-    if (points.length < 4) {
+    if (points.length < 2) {
         alert("Você deve fornecer pelo menos 4 pontos para criar uma matriz.");
         return;
     }
@@ -563,30 +604,37 @@ document.getElementById('modal-overlay').addEventListener('click', function() {
     document.getElementById('modal-overlay').style.display = 'none'; // Oculta o overlay
 });
 
+// Função para adicionar a matriz à tabela de objetos
 // Função para adicionar uma matriz à tabela de objetos
 function addMatrixToTable(matrix) {
-    const tableBody = document.querySelector('#object-table tbody');
+    const table = document.getElementById('object-table');
+    const row = table.insertRow();
+    
+    // Nome da matriz
+    const nameCell = row.insertCell();
+    nameCell.textContent = matrix.name;
 
-    // Cria uma nova linha
-    const newRow = document.createElement('tr');
+    // Tipo de objeto
+    const typeCell = row.insertCell();
+    typeCell.textContent = matrix.type;
 
-    // Adiciona células com informações da matriz
-    const nameCell = document.createElement('td');
-    nameCell.textContent = matrix.name; // Nome da matriz
-    newRow.appendChild(nameCell);
+    // Coordenadas da matriz
+    const coordsCell = row.insertCell();
+    coordsCell.textContent = matrix.points.map(point => `(${point[0]}, ${point[1]})`).join(', ');
 
-    const typeCell = document.createElement('td');
-    typeCell.textContent = 'Matriz'; // Tipo é 'Matriz'
-    newRow.appendChild(typeCell);
+    // Define o evento de seleção de objeto
+    row.onclick = () => selectObjectFromTable(matrix.name);
+}
 
-    const coordsCell = document.createElement('td');
-    // Converte as coordenadas da matriz em uma string
-    const coordsString = matrix.points.map(point => `(${point[0]}, ${point[1]})`).join(', ');
-    coordsCell.textContent = coordsString; // Adiciona as coordenadas formatadas
-    newRow.appendChild(coordsCell);
+// Função para selecionar um objeto pelo nome, incluindo matrizes
+function selectObjectFromTable(name) {
+    selectedObject = displayList.find(obj => obj.name === name);
 
-    // Adiciona a nova linha à tabela
-    tableBody.appendChild(newRow);
+    if (selectedObject) {
+        updateTable();  // Atualiza a tabela para destacar o objeto selecionado
+    } else {
+        alert('Objeto não encontrado.');
+    }
 }
 
 // Função para multiplicar matrizes
@@ -791,7 +839,7 @@ function drawMatrix(matrix) {
     });
 }
 
-
+    
 // Função para atualizar a tabela
 function updateTable() {
     const tbody = document.querySelector('#object-table tbody');
@@ -831,7 +879,7 @@ function updateTable() {
         } else if (obj.type === 'polyline' || obj.type === 'polygon') {
             coordsCell.textContent = obj.coords.map(point => `(${point.x}, ${point.y})`).join(' - ');
         } else if (obj.type === 'matrix') {
-            coordsCell.textContent = obj.coords.map(row => row.join(', ')).join(' | '); // Formatação da matriz
+            coordsCell.textContent = obj.points.map(point => `(${point[0]}, ${point[1]})`).join(' - ');
         } else {
             coordsCell.textContent = 'Coordenadas não disponíveis';
         }
@@ -846,6 +894,7 @@ function updateTable() {
         tbody.appendChild(row);
     });
 }
+
 
 
 function handleZoom(event) {
