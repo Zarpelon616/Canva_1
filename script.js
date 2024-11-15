@@ -395,53 +395,48 @@ function reflectObject() {
 // Função para aplicar cisalhamento, incluindo polilinhas e polígonos
 function shearObject() {
     if (selectedObject) {
-        const shearAxis = prompt("Escolha o eixo de cisalhamento (X ou Y):").toUpperCase();
-        const shearValue = parseFloat(prompt("Digite o valor do cisalhamento:"));
+        const shearX = parseFloat(prompt("Digite o valor do cisalhamento no eixo X:"));
+        const shearY = parseFloat(prompt("Digite o valor do cisalhamento no eixo Y:"));
 
         displayList.forEach(object => {
             if (object === selectedObject) {
-                switch (shearAxis) {
-                    case "X":
-                        // Cisalhamento no eixo X (modifica a coordenada X com base na coordenada Y)
-                        if (object.type === "point") {
-                            object.coords.x += shearValue * object.coords.y;
-                        } else if (object.type === "line") {
-                            object.coords.x1 += shearValue * object.coords.y1;
-                            object.coords.x2 += shearValue * object.coords.y2;
-                        } else if (object.type === "polyline" || object.type === "polygon") {
-                            // Cisalhamento de todos os pontos de polilinha ou polígono
-                            object.coords.forEach(point => {
-                                point.x += shearValue * point.y;
-                            });
-                        }
+                // Aplique o cisalhamento aos pontos do objeto selecionado
+                switch (object.type) {
+                    case "point":
+                        // Para ponto, aplica o cisalhamento
+                        object.coords.x += shearX * object.coords.y;
+                        object.coords.y += shearY * object.coords.x;
                         break;
 
-                    case "Y":
-                        // Cisalhamento no eixo Y (modifica a coordenada Y com base na coordenada X)
-                        if (object.type === "point") {
-                            object.coords.y += shearValue * object.coords.x;
-                        } else if (object.type === "line") {
-                            object.coords.y1 += shearValue * object.coords.x1;
-                            object.coords.y2 += shearValue * object.coords.x2;
-                        } else if (object.type === "polyline" || object.type === "polygon") {
-                            // Cisalhamento de todos os pontos de polilinha ou polígono
-                            object.coords.forEach(point => {
-                                point.y += shearValue * point.x;
-                            });
-                        }
+                    case "line":
+                        // Para linha, aplica o cisalhamento nos dois pontos
+                        object.coords.x1 += shearX * object.coords.y1;
+                        object.coords.y1 += shearY * object.coords.x1;
+                        object.coords.x2 += shearX * object.coords.y2;
+                        object.coords.y2 += shearY * object.coords.x2;
+                        break;
+
+                    case "polyline":
+                    case "polygon":
+                        // Para polilinha e polígono, aplica o cisalhamento a cada ponto
+                        object.coords.forEach(point => {
+                            point.x += shearX * point.y;
+                            point.y += shearY * point.x;
+                        });
                         break;
 
                     default:
-                        alert("Eixo inválido! Escolha 'X' ou 'Y'.");
+                        alert("Tipo de objeto não suportado para cisalhamento.");
                         break;
                 }
             }
         });
 
-        updateViewport();
-        updateTable();
+        updateViewport(); // Atualiza o desenho no viewport
+        updateTable();    // Atualiza a tabela de objetos
     }
 }
+
 
 
 
