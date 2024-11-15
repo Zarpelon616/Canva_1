@@ -22,6 +22,10 @@ document.getElementById('add-polygon').addEventListener('click', addPolygon);
 document.getElementById('remove-object').addEventListener('click', removeObject);
 document.getElementById('remove-all-objects').addEventListener('click', removeAllObjects);
 document.getElementById('move-point').addEventListener('click', moveObject);
+document.getElementById('reflect-object').addEventListener('click', reflectObject);
+document.getElementById('shear-object').addEventListener('click', shearObject); 
+document.getElementById('shear-matrix').addEventListener('click', shearMatrix);
+
 
 canvas.addEventListener('click', selectPoint);
 canvas.addEventListener('wheel', handleZoom);
@@ -299,6 +303,148 @@ function moveObject() {
     }
 }
 
+// Função para refletir objetos sobre o eixo X, Y ou ambos
+function reflectObject() {
+    if (selectedObject) {
+        const reflectionAxis = prompt("Escolha os eixos de reflexão (X, Y, ou ambos):").toUpperCase();
+
+        displayList.forEach(object => {
+            if (object === selectedObject) {
+                switch (reflectionAxis) {
+                    case "X":
+                        // Refletir sobre o eixo X (invertendo o valor de Y)
+                        if (object.type === "point") {
+                            object.coords.y = -object.coords.y;
+                        } else if (object.type === "line") {
+                            object.coords.y1 = -object.coords.y1;
+                            object.coords.y2 = -object.coords.y2;
+                        } else if (object.type === "polyline" || object.type === "polygon") {
+                            // Refletir todos os pontos de polilinha ou polígono sobre o eixo X
+                            object.coords.forEach(point => {
+                                point.y = -point.y;
+                            });
+                        } else if (object instanceof Matrix) {
+                            // Refletir sobre o eixo X para matrizes
+                            object.points.forEach(point => {
+                                point[1] = -point[1]; // Reflete a coordenada Y
+                            });
+                        }
+                        break;
+
+                    case "Y":
+                        // Refletir sobre o eixo Y (invertendo o valor de X)
+                        if (object.type === "point") {
+                            object.coords.x = -object.coords.x;
+                        } else if (object.type === "line") {
+                            object.coords.x1 = -object.coords.x1;
+                            object.coords.x2 = -object.coords.x2;
+                        } else if (object.type === "polyline" || object.type === "polygon") {
+                            // Refletir todos os pontos de polilinha ou polígono sobre o eixo Y
+                            object.coords.forEach(point => {
+                                point.x = -point.x;
+                            });
+                        } else if (object instanceof Matrix) {
+                            // Refletir sobre o eixo Y para matrizes
+                            object.points.forEach(point => {
+                                point[0] = -point[0]; // Reflete a coordenada X
+                            });
+                        }
+                        break;
+
+                    case "AMBOS":
+                        // Refletir sobre ambos os eixos X e Y (invertendo tanto X quanto Y)
+                        if (object.type === "point") {
+                            object.coords.x = -object.coords.x;
+                            object.coords.y = -object.coords.y;
+                        } else if (object.type === "line") {
+                            object.coords.x1 = -object.coords.x1;
+                            object.coords.y1 = -object.coords.y1;
+                            object.coords.x2 = -object.coords.x2;
+                            object.coords.y2 = -object.coords.y2;
+                        } else if (object.type === "polyline" || object.type === "polygon") {
+                            // Refletir todos os pontos de polilinha ou polígono sobre ambos os eixos
+                            object.coords.forEach(point => {
+                                point.x = -point.x;
+                                point.y = -point.y;
+                            });
+                        } else if (object instanceof Matrix) {
+                            // Refletir sobre ambos os eixos X e Y para matrizes
+                            object.points.forEach(point => {
+                                point[0] = -point[0]; // Reflete a coordenada X
+                                point[1] = -point[1]; // Reflete a coordenada Y
+                            });
+                        }
+                        break;
+
+                    default:
+                        alert("Eixo inválido! Escolha 'X', 'Y', ou 'AMBOS'.");
+                        break;
+                }
+            }
+        });
+
+        updateViewport();
+        updateTable();
+    } else {
+        alert("Nenhum objeto selecionado para reflexão.");
+    }
+}
+
+
+
+// Função para aplicar cisalhamento, incluindo polilinhas e polígonos
+function shearObject() {
+    if (selectedObject) {
+        const shearAxis = prompt("Escolha o eixo de cisalhamento (X ou Y):").toUpperCase();
+        const shearValue = parseFloat(prompt("Digite o valor do cisalhamento:"));
+
+        displayList.forEach(object => {
+            if (object === selectedObject) {
+                switch (shearAxis) {
+                    case "X":
+                        // Cisalhamento no eixo X (modifica a coordenada X com base na coordenada Y)
+                        if (object.type === "point") {
+                            object.coords.x += shearValue * object.coords.y;
+                        } else if (object.type === "line") {
+                            object.coords.x1 += shearValue * object.coords.y1;
+                            object.coords.x2 += shearValue * object.coords.y2;
+                        } else if (object.type === "polyline" || object.type === "polygon") {
+                            // Cisalhamento de todos os pontos de polilinha ou polígono
+                            object.coords.forEach(point => {
+                                point.x += shearValue * point.y;
+                            });
+                        }
+                        break;
+
+                    case "Y":
+                        // Cisalhamento no eixo Y (modifica a coordenada Y com base na coordenada X)
+                        if (object.type === "point") {
+                            object.coords.y += shearValue * object.coords.x;
+                        } else if (object.type === "line") {
+                            object.coords.y1 += shearValue * object.coords.x1;
+                            object.coords.y2 += shearValue * object.coords.x2;
+                        } else if (object.type === "polyline" || object.type === "polygon") {
+                            // Cisalhamento de todos os pontos de polilinha ou polígono
+                            object.coords.forEach(point => {
+                                point.y += shearValue * point.x;
+                            });
+                        }
+                        break;
+
+                    default:
+                        alert("Eixo inválido! Escolha 'X' ou 'Y'.");
+                        break;
+                }
+            }
+        });
+
+        updateViewport();
+        updateTable();
+    }
+}
+
+
+
 // Função para transladar um objeto selecionado
 function translateObject() {
     if (!selectedObject) {
@@ -433,8 +579,7 @@ function rotateObject() {
     }
 }
 
-
-// Função para escalonar um objeto selecionado em relação à origem  
+// Função para escalonar um objeto selecionado em relação ao centro do objeto ou à origem
 function scaleObject() {
     if (!selectedObject) {
         const name = prompt('Nenhum objeto selecionado. Insira o nome do objeto que deseja selecionar:');
@@ -442,28 +587,77 @@ function scaleObject() {
             selectObjectByName(name);
         }
     }
+
     if (selectedObject) {
         const scale = parseFloat(prompt('Fator de escalonamento:'));
+        const referencePoint = prompt('Escalonar em relação ao "centro" ou "origem"?').toLowerCase();
 
         if (!isNaN(scale) && scale > 0) {
+            let centerX = 0, centerY = 0;
+
+            // Calcula o centro do objeto ou a origem, se for o ponto de referência escolhido
+            if (referencePoint === 'centro') {
+                if (selectedObject.type === 'point') {
+                    centerX = selectedObject.coords.x;
+                    centerY = selectedObject.coords.y;
+                } else if (selectedObject.type === 'line') {
+                    centerX = (selectedObject.coords.x1 + selectedObject.coords.x2) / 2;
+                    centerY = (selectedObject.coords.y1 + selectedObject.coords.y2) / 2;
+                } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
+                    selectedObject.coords.forEach(point => {
+                        centerX += point.x;
+                        centerY += point.y;
+                    });
+                    centerX /= selectedObject.coords.length;
+                    centerY /= selectedObject.coords.length;
+                } else if (selectedObject instanceof Matrix) {
+                    // A origem é o primeiro ponto na matriz
+                    centerX = selectedObject.points[0][0];
+                    centerY = selectedObject.points[0][1];
+                }
+            } else if (referencePoint === 'origem') {
+                // Para outros tipos de objetos, a origem é o primeiro ponto
+                if (selectedObject.type === 'point') {
+                    centerX = selectedObject.coords.x;
+                    centerY = selectedObject.coords.y;
+                } else if (selectedObject.type === 'line') {
+                    centerX = selectedObject.coords.x1;
+                    centerY = selectedObject.coords.y1;
+                } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
+                    centerX = selectedObject.coords[0].x;
+                    centerY = selectedObject.coords[0].y;
+                } else if (selectedObject instanceof Matrix) {
+                    centerX = selectedObject.points[0][0];
+                    centerY = selectedObject.points[0][1];
+                }
+            }
+
+            // Função para escalonar um ponto em relação ao centro ou à origem
+            const scalePoint = (x, y) => ({
+                x: centerX + (x - centerX) * scale,
+                y: centerY + (y - centerY) * scale
+            });
+
+            // Aplica o escalonamento com base na referência escolhida
             if (selectedObject.type === 'point') {
-                selectedObject.coords.x *= scale;
-                selectedObject.coords.y *= scale;
+                const newCoords = scalePoint(selectedObject.coords.x, selectedObject.coords.y);
+                selectedObject.coords.x = newCoords.x;
+                selectedObject.coords.y = newCoords.y;
             } else if (selectedObject.type === 'line') {
-                selectedObject.coords.x1 *= scale;
-                selectedObject.coords.y1 *= scale;
-                selectedObject.coords.x2 *= scale;
-                selectedObject.coords.y2 *= scale;
+                const newCoords1 = scalePoint(selectedObject.coords.x1, selectedObject.coords.y1);
+                const newCoords2 = scalePoint(selectedObject.coords.x2, selectedObject.coords.y2);
+                selectedObject.coords.x1 = newCoords1.x;
+                selectedObject.coords.y1 = newCoords1.y;
+                selectedObject.coords.x2 = newCoords2.x;
+                selectedObject.coords.y2 = newCoords2.y;
             } else if (selectedObject.type === 'polyline' || selectedObject.type === 'polygon') {
-                selectedObject.coords.forEach(point => {
-                    point.x *= scale;
-                    point.y *= scale;
-                });
-            } else if (selectedObject instanceof Matrix) { // Verifica se o objeto é uma instância da classe Matrix
-                selectedObject.points.forEach(point => {
-                    point[0] *= scale; // Escalonar coordenada x
-                    point[1] *= scale; // Escalonar coordenada y
-                });
+                selectedObject.coords = selectedObject.coords.map(point => 
+                    scalePoint(point.x, point.y)
+                );
+            } else if (selectedObject instanceof Matrix) {
+                selectedObject.points = selectedObject.points.map(point => 
+                    [centerX + (point[0] - centerX) * scale, centerY + (point[1] - centerY) * scale]
+                );
             }
 
             updateViewport();
@@ -476,7 +670,7 @@ function scaleObject() {
     }
 }
 
-//Corrigir bug onde a matriz não costuma aparecer na tabela objeto
+
 // Classe para a Matriz
 class Matrix {
     constructor(name, points) {
@@ -521,6 +715,47 @@ class Matrix {
     }
 }
 
+// Função para aplicar cisalhamento em matrizes, com cisalhamento no eixo X ou Y
+function shearMatrix() {
+    const matrixName = prompt("Digite o nome da matriz para cisalhamento:");
+
+    // Seleciona o objeto baseado no nome
+    selectObjectFromTable(matrixName);
+
+    // Verifica se o objeto selecionado é uma matriz
+    if (selectedObject && selectedObject.type === "matrix") {
+        const shearAxis = prompt("Escolha o eixo de cisalhamento (X ou Y):").toUpperCase();
+        const shearValue = parseFloat(prompt("Digite o valor do cisalhamento:"));
+
+        if (isNaN(shearValue)) {
+            alert("Por favor, insira um valor numérico válido para o cisalhamento.");
+            return;
+        }
+        // Aplicando o cisalhamento em cada ponto da matriz
+        selectedObject.coords.forEach(row => {
+            row.forEach(point => {
+                switch (shearAxis) {
+                    case "X":
+                        // Cisalhamento no eixo X (modificando X com base em Y)
+                        point.x += shearValue * point.y;
+                        break;
+                    case "Y":
+                        // Cisalhamento no eixo Y (modificando Y com base em X)
+                        point.y += shearValue * point.x;
+                        break;
+                    default:
+                        alert("Eixo inválido! Escolha 'X' ou 'Y'.");
+                        break;
+                }
+            });
+        });
+
+        updateViewport();
+        updateTable();
+    } else {
+        alert("Por favor, selecione uma matriz.");
+    }
+}
 
 
 // Função para abrir o modal
@@ -604,12 +839,24 @@ document.getElementById('modal-overlay').addEventListener('click', function() {
     document.getElementById('modal-overlay').style.display = 'none'; // Oculta o overlay
 });
 
-// Função para adicionar a matriz à tabela de objetos
 // Função para adicionar uma matriz à tabela de objetos
 function addMatrixToTable(matrix) {
     const table = document.getElementById('object-table');
-    const row = table.insertRow();
     
+    if (!table) {
+        console.error("Tabela de objetos não encontrada.");
+        return;
+    }
+
+    // Verificar se a matriz já está na tabela
+    const existingRow = Array.from(table.rows).find(row => row.cells[0].textContent === matrix.name);
+    if (existingRow) {
+        console.log('Matriz já existe na tabela.');
+        return; // Se a matriz já existe, não adicione novamente
+    }
+
+    const row = table.insertRow();
+
     // Nome da matriz
     const nameCell = row.insertCell();
     nameCell.textContent = matrix.name;
@@ -628,14 +875,33 @@ function addMatrixToTable(matrix) {
 
 // Função para selecionar um objeto pelo nome, incluindo matrizes
 function selectObjectFromTable(name) {
+    const table = document.getElementById('object-table');
+    const rows = table.rows;
+
+    // Limpar a seleção de qualquer objeto previamente selecionado
+    Array.from(rows).forEach(row => row.classList.remove('selected'));
+
+    // Encontrar o objeto no displayList
     selectedObject = displayList.find(obj => obj.name === name);
 
     if (selectedObject) {
+        // Encontrar a linha correspondente ao objeto e adicionar a classe 'selected'
+        const row = Array.from(rows).find(row => row.cells[0].textContent === name);
+        if (row) {
+            row.classList.add('selected');
+        }
         updateTable();  // Atualiza a tabela para destacar o objeto selecionado
     } else {
         alert('Objeto não encontrado.');
     }
 }
+
+// Função para atualizar a tabela (caso haja algum outro processamento necessário)
+function updateTable() {
+    // Exemplo: Atualização de algo na tabela, como re-exibir as matrizes ou outros objetos
+    console.log('Tabela atualizada.');
+}
+
 
 // Função para multiplicar matrizes
 function multiplyMatrices(matrixA, matrixB) {
