@@ -710,49 +710,6 @@ class Matrix {
     }
 }
 
-// Função para aplicar cisalhamento em matrizes, com cisalhamento no eixo X ou Y
-function shearMatrix() {
-    const matrixName = prompt("Digite o nome da matriz para cisalhamento:");
-
-    // Seleciona o objeto baseado no nome
-    selectObjectFromTable(matrixName);
-
-    // Verifica se o objeto selecionado é uma matriz
-    if (selectedObject && selectedObject.type === "matrix") {
-        const shearAxis = prompt("Escolha o eixo de cisalhamento (X ou Y):").toUpperCase();
-        const shearValue = parseFloat(prompt("Digite o valor do cisalhamento:"));
-
-        if (isNaN(shearValue)) {
-            alert("Por favor, insira um valor numérico válido para o cisalhamento.");
-            return;
-        }
-        // Aplicando o cisalhamento em cada ponto da matriz
-        selectedObject.coords.forEach(row => {
-            row.forEach(point => {
-                switch (shearAxis) {
-                    case "X":
-                        // Cisalhamento no eixo X (modificando X com base em Y)
-                        point.x += shearValue * point.y;
-                        break;
-                    case "Y":
-                        // Cisalhamento no eixo Y (modificando Y com base em X)
-                        point.y += shearValue * point.x;
-                        break;
-                    default:
-                        alert("Eixo inválido! Escolha 'X' ou 'Y'.");
-                        break;
-                }
-            });
-        });
-
-        updateViewport();
-        updateTable();
-    } else {
-        alert("Por favor, selecione uma matriz.");
-    }
-}
-
-
 // Função para abrir o modal
 document.getElementById('add-matrix').addEventListener('click', function() {
     document.getElementById('matrix-creation-modal').style.display = 'block';
