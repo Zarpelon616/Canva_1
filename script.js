@@ -24,7 +24,6 @@ document.getElementById('remove-all-objects').addEventListener('click', removeAl
 document.getElementById('move-point').addEventListener('click', moveObject);
 document.getElementById('reflect-object').addEventListener('click', reflectObject);
 document.getElementById('shear-object').addEventListener('click', shearObject); 
-document.getElementById('shear-matrix').addEventListener('click', shearMatrix);
 
 
 canvas.addEventListener('click', selectPoint);
